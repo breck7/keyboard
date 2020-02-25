@@ -15,11 +15,33 @@ class Symbol {
     this._state = "age"
   }
   hideIfOlderThan(value) {
-    if (this._age > parseInt(value)) this._jQueryElement.parent().css("opacity", "0")
+    if (this._age >= parseInt(value)) this.hide()
     else this.show()
   }
+  hideIfYoungerThan(value) {
+    if (this._age <= parseInt(value)) this.hide()
+    else this.show()
+  }
+  hide() {
+    this._jQueryElement.css("opacity", "0")
+    const sib = this.getSibling()
+    if (!sib || (sib && sib.isHidden())) this._jQueryElement.parent().css("opacity", "0")
+    this._hidden = true
+  }
+  getSibling() {
+    // todo: cleanup
+    const sib = this._jQueryElement.siblings()[0]
+    if (!sib) return undefined
+    const index = parseInt(jQuery(sib).attr("symbol-index"))
+    return symbols[index]
+  }
+  isHidden() {
+    return this._hidden === true
+  }
   show() {
+    this._jQueryElement.css("opacity", "")
     this._jQueryElement.parent().css("opacity", "")
+    this._hidden = false
   }
   replaceWithYear() {
     const suffix = this._year < 0 ? "BC" : ""
@@ -47,8 +69,8 @@ class Symbol {
   }
 }
 
+const symbols = []
 const main = async () => {
-  const symbols = []
   jQuery(".key").each(function(index, el) {
     jQuery(this)
       .find("span,b")
@@ -66,6 +88,10 @@ const main = async () => {
     const command = jQuery(this).attr("value")
     const argIfAny = jQuery(this).attr("data-arg")
     symbols.forEach(sym => sym[command](argIfAny))
+  })
+  jQuery("#slider").on("input", function() {
+    const val = 4100 - parseInt(jQuery(this).val())
+    symbols.forEach(sym => sym.hideIfYoungerThan(val))
   })
   //symbols.forEach(sym => sym.replaceWithAge())
 }
