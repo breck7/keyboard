@@ -14,16 +14,12 @@ class Symbol {
     this._jQueryElement.text(this._age)
     this._state = "age"
   }
-  addHeatToOldest() {
-    const percent = this._age / 4000
-    this._jQueryElement.css("color", `rgb(0,0,255,${percent})`)
+  hideIfOlderThan(value) {
+    if (this._age > parseInt(value)) this._jQueryElement.parent().css("opacity", "0")
+    else this.show()
   }
-  addHeatToNewest() {
-    const percent = (4000 - this._age) / 4000
-    this._jQueryElement.css("color", `rgb(0,0,255,${percent})`)
-  }
-  removeHeat() {
-    this._jQueryElement.css("color", ``)
+  show() {
+    this._jQueryElement.parent().css("opacity", "")
   }
   replaceWithYear() {
     const suffix = this._year < 0 ? "BC" : ""
@@ -68,7 +64,8 @@ const main = async () => {
   })
   jQuery("#controls a").on("click", function() {
     const command = jQuery(this).attr("value")
-    symbols.forEach(sym => sym[command]())
+    const argIfAny = jQuery(this).attr("data-arg")
+    symbols.forEach(sym => sym[command](argIfAny))
   })
   //symbols.forEach(sym => sym.replaceWithAge())
 }
