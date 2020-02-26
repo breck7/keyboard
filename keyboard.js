@@ -79,10 +79,18 @@ const main = async () => {
         symbols.push(new Symbol(jQuery(this)))
       })
   })
+  // If someone clicks on a key but not a span or b, click the first child.
+  // Ideally we'd just refactor the HTML and change spans and bs to a tags, but
+  // no time for that now :)
+  jQuery(".key").on("click", function() {
+    const firstHit = jQuery(this).find("span,b")[0]
+    if (firstHit) jQuery(firstHit).click()
+  })
   jQuery(".key span,.key b").on("click", function() {
     const index = parseInt(jQuery(this).attr("symbol-index"))
     const sym = symbols[index]
     window.location = sym.getUrl()
+    return false
   })
   jQuery("#controls a").on("click", function() {
     const command = jQuery(this).attr("value")
