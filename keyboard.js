@@ -90,8 +90,10 @@ const main = async () => {
     symbols.forEach(sym => sym[command](argIfAny))
   })
   jQuery("#slider").on("input", function() {
-    const val = 4100 - parseInt(jQuery(this).val())
+    const year = parseInt(jQuery(this).val())
+    const val = 4020 - year
     symbols.forEach(sym => sym.hideIfYoungerThan(val))
+    jQuery("#sliderOutput").text(year - 2000)
   })
   //symbols.forEach(sym => sym.replaceWithAge())
 }
